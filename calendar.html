@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>월별 캘린더 · 이현진 강사님 스케줄</title>
+<meta name="description" content="이현진 강사님의 월별 수업 캘린더입니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .month-tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;}
+  .month-tab{
+    border:1px solid var(--line);background:var(--card);color:var(--ink-soft);
+    padding:8px 16px;border-radius:var(--radius-pill);font-size:13px;font-weight:600;
+    cursor:pointer;font-family:inherit;
+  }
+  .month-tab.active{background:var(--ink);color:#F5F3EC;border-color:var(--ink);}
+  .month-tab:hover:not(.active){border-color:var(--ink-soft);color:var(--ink);}
+
+  .legend{display:flex;gap:14px;margin-bottom:14px;font-size:12px;color:var(--ink-soft);flex-wrap:wrap;}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .legend .dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+  .legend .dot.has{background:var(--teal);}
+  .legend .dot.today{background:var(--clay);}
+  .legend .dot.holiday{background:#B0492E;}
+
+  .day-cell.holiday{background:rgba(176,73,46,0.06);border-color:rgba(176,73,46,0.25);}
+  .holiday-tag{display:inline-block;font-size:10px;color:#B0492E;font-weight:600;margin-top:2px;}
+
+  .month-title{font-size:19px;margin-bottom:14px;}
+
+  .week-head{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px;}
+  .week-head div{text-align:center;font-size:12px;color:var(--ink-faint);font-weight:600;padding:4px 0;}
+
+  .month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+  .day-cell{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:8px;
+    min-height:88px;
+    padding:6px 7px;
+    position:relative;
+    cursor:default;
+    transition:box-shadow .12s ease, border-color .12s ease;
+  }
+  .day-cell.empty{background:transparent;border-color:transparent;cursor:default;}
+  .day-cell.today{border-color:var(--clay);box-shadow:0 0 0 1px var(--clay);}
+  .day-cell.has .day-num{color:var(--teal);}
+  .day-cell.has{cursor:pointer;}
+  .day-cell.has:hover{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal);}
+  .day-num{font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:4px;}
+  .day-cell.sun .day-num{color:#B0492E;}
+  .ev-line{font-size:10.5px;line-height:1.35;color:var(--ink);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+  .ev-line.ev-topic{color:var(--ink-soft);-webkit-line-clamp:1;margin-top:2px;}
+
+  @media (max-width:640px){
+    .day-cell{min-height:64px;padding:4px 5px;}
+    .ev-line{font-size:9.5px;}
+    .day-num{font-size:11px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- 모달 -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box" id="modalBox">
+    <div class="modal-header">
+      <h3 id="modalTitle"></h3>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="page-head">
+    <div class="kicker"><a class="back" href="index.html">← 스케줄 홈으로</a></div>
+    <h1>월별 캘린더</h1>
+    <p class="subtitle">날짜를 클릭하면 해당일의 수업 상세 정보를 확인할 수 있습니다.</p>
+  </div>
+
+  <div class="month-tabs" id="monthTabs"></div>
+  <div class="legend">
+    <span><i class="dot has"></i>수업 있는 날</span>
+    <span><i class="dot today"></i>오늘</span>
+    <span><i class="dot holiday"></i>휴일 (수업 제외)</span>
+  </div>
+
+  <h2 class="month-title" id="monthTitle"></h2>
+  <div class="week-head" id="weekHead"></div>
+  <div class="month-grid" id="monthGrid"></div>
+
+  <footer class="site-footer">각 날짜의 요약은 등록된 기관의 요일·시간 정보를 기준으로 자동 계산됩니다.</footer>
+</div>
+
+<script src="schedule-data.js"></script>
+<script>
+(function(){
+  "use strict";
+  var HJ = window.HJ;
+  var data = HJ.load();
+  var today = HJ.todayMidnight();
+
+  var MONTHS = [
+    {year:2026, month:8, label:"9월"},
+    {year:2026, month:9, label:"10월"},
+    {year:2026, month:10, label:"11월"},
+    {year:2026, month:11, label:"12월"}
+  ];
+
+  var activeIdx = 0;
+  MONTHS.forEach(function(m,i){
+    if(today.getFullYear()===m.year && today.getMonth()===m.month) activeIdx = i;
+  });
+
+  /* ===== 모달 ===== */
+  var overlay = document.getElementById("modalOverlay");
+  var modalTitle = document.getElementById("modalTitle");
+  var modalBody = document.getElementById("modalBody");
+
+  document.getElementById("modalClose").addEventListener("click", closeModal);
+  overlay.addEventListener("click", function(e){
+    if(e.target === overlay) closeModal();
+  });
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape") closeModal();
+  });
+
+  function closeModal(){
+    overlay.classList.remove("show");
+  }
+
+  function showDayModal(date, matched){
+    modalTitle.textContent = HJ.fmtDate(date) + " 수업 일정";
+    var html = "";
+    matched.forEach(function(it){
+      var sessNo = HJ.sessionNumber(it, date);
+      var curriculum = HJ.CURRICULA[it.topicKey];
+      var lesson = null;
+      if(curriculum && curriculum.lessons && sessNo > 0 && sessNo <= curriculum.lessons.length){
+        lesson = curriculum.lessons[sessNo - 1];
+      }
+
+      html += '<div class="modal-item">';
+      html += '<div class="mi-name">'+HJ.esc(it.name)+' <span class="badge">'+HJ.esc(it.day)+'요일</span></div>';
+      html += '<div class="mi-time">'+HJ.esc(it.startTime)+' – '+HJ.esc(it.endTime)+'</div>';
+      html += '<div class="mi-topic">강의주제: '+HJ.esc(it.topic)+'</div>';
+
+      if(lesson){
+        html += '<div class="mi-lesson">';
+        html += '<div class="mi-lesson-no">'+sessNo+'회차</div>';
+        html += '<div class="mi-lesson-title">'+HJ.esc(lesson.title)+'</div>';
+        html += '<div class="mi-lesson-desc">'+HJ.esc(lesson.desc)+'</div>';
+        html += '</div>';
+      } else if(sessNo > 0){
+        html += '<div class="mi-lesson">';
+        html += '<div class="mi-lesson-no">'+sessNo+'회차</div>';
+        html += '<div class="mi-lesson-title">커리큘럼 정보 없음</div>';
+        html += '</div>';
+      }
+      html += '</div>';
+    });
+    modalBody.innerHTML = html;
+    overlay.classList.add("show");
+  }
+
+  /* ===== 캘린더 렌더링 ===== */
+  function buildBrief(matched){
+    if(matched.length===0) return "";
+    if(matched.length===1){
+      var m = matched[0];
+      return '<div class="ev-line">'+HJ.esc(m.name)+' '+HJ.esc(m.startTime)+'-'+HJ.esc(m.endTime)+'</div>'+
+             '<div class="ev-line ev-topic">'+HJ.esc(m.topic)+'</div>';
+    }
+    var names = matched.map(function(m){ return HJ.esc(m.name)+' '+HJ.esc(m.startTime); }).join(', ');
+    return '<div class="ev-line">'+names+'</div>'+
+           '<div class="ev-line ev-topic">총 '+matched.length+'건 진행</div>';
+  }
+
+  function renderTabs(){
+    var el = document.getElementById("monthTabs");
+    el.innerHTML = "";
+    MONTHS.forEach(function(m,i){
+      var btn = document.createElement("button");
+      btn.className = "month-tab" + (i===activeIdx?" active":"");
+      btn.textContent = m.label;
+      btn.addEventListener("click", function(){ activeIdx=i; renderTabs(); renderMonth(); });
+      el.appendChild(btn);
+    });
+  }
+
+  function renderMonth(){
+    var m = MONTHS[activeIdx];
+    document.getElementById("monthTitle").textContent = m.year + "년 " + m.label;
+
+    var weekHead = document.getElementById("weekHead");
+    weekHead.innerHTML = HJ.DOW.map(function(d){ return "<div>"+d+"</div>"; }).join("");
+
+    var first = new Date(m.year, m.month, 1);
+    var startOffset = first.getDay();
+    var daysInMonth = new Date(m.year, m.month+1, 0).getDate();
+
+    var grid = document.getElementById("monthGrid");
+    grid.innerHTML = "";
+
+    for(var i=0;i<startOffset;i++){
+      var blank = document.createElement("div");
+      blank.className = "day-cell empty";
+      grid.appendChild(blank);
+    }
+
+    for(var day=1; day<=daysInMonth; day++){
+      var date = new Date(m.year, m.month, day);
+      var matched = data.filter(function(it){ return HJ.occursOn(it, date); })
+                         .sort(function(a,b){ return a.startTime.localeCompare(b.startTime); });
+      var cell = document.createElement("div");
+      var isToday = HJ.isSameDate(date, today);
+      var isHol = HJ.isHoliday(date);
+      var cls = "day-cell";
+      if(matched.length>0) cls += " has";
+      if(isToday) cls += " today";
+      if(date.getDay()===0) cls += " sun";
+      if(isHol) cls += " holiday";
+      cell.className = cls;
+      var holTag = isHol ? '<div class="holiday-tag">🚫 휴일</div>' : '';
+      cell.innerHTML = '<div class="day-num">'+day+'</div>' + holTag + buildBrief(matched);
+
+      // 날짜 클릭 이벤트
+      if(matched.length > 0){
+        (function(d, m){
+          cell.addEventListener("click", function(){
+            showDayModal(d, m);
+          });
+        })(date, matched);
+      }
+
+      grid.appendChild(cell);
+    }
+  }
+
+  renderTabs();
+  renderMonth();
+})();
+</script>
+</body>
+</html>

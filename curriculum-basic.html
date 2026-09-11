@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스마트폰 기초교실 · 커리큘럼</title>
+<meta name="description" content="스마트폰 기초교실 총 12회차 커리큘럼입니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .sites{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+  .lesson-list{margin-top:22px;}
+  .lesson{
+    display:flex;gap:16px;
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius-card);
+    padding:16px 18px;margin-bottom:10px;
+  }
+  .lesson .no{
+    font-family:'Noto Serif KR',serif;font-weight:700;font-size:20px;color:var(--teal);
+    flex-shrink:0;width:34px;
+  }
+  .lesson .lesson-title{font-size:15px;font-weight:600;margin-bottom:4px;}
+  .lesson .lesson-desc{font-size:13.5px;color:var(--ink-soft);}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="page-head">
+    <div class="kicker"><a class="back" href="index.html">← 스케줄 홈으로</a></div>
+    <h1>① 스마트폰 기초교실</h1>
+    <p class="subtitle">총 12회차 커리큘럼</p>
+    <div class="sites" id="sites"></div>
+  </div>
+
+  <div class="lesson-list" id="lessonList"></div>
+
+  <footer class="site-footer">회차 내용은 필요에 따라 진행 순서를 조정할 수 있습니다.</footer>
+</div>
+
+<script src="schedule-data.js"></script>
+<script>
+(function(){
+  "use strict";
+  var HJ = window.HJ;
+  var data = HJ.load();
+  var curriculum = HJ.CURRICULA.basic;
+
+  var sites = data.filter(function(it){ return it.topicKey==="basic"; });
+  document.getElementById("sites").innerHTML = sites.map(function(it){
+    return '<span class="badge">'+HJ.esc(it.name)+' · '+HJ.esc(it.day)+'요일 '+HJ.esc(it.startTime)+'-'+HJ.esc(it.endTime)+'</span>';
+  }).join("") || '<span class="badge solo">연결된 기관 없음</span>';
+
+  document.getElementById("lessonList").innerHTML = curriculum.lessons.map(function(l){
+    return '<div class="lesson">'+
+      '<div class="no">'+l.no+'</div>'+
+      '<div><div class="lesson-title">'+HJ.esc(l.title)+'</div><div class="lesson-desc">'+HJ.esc(l.desc)+'</div></div>'+
+    '</div>';
+  }).join("");
+})();
+</script>
+</body>
+</html>
