@@ -79,14 +79,14 @@
       topic:"스마트폰 기초교실",
       topicKey:"basic",
       managerName:"서윤숙",
-      managerRole:"",
+      managerRole:"회장님",
       managerPhone:"010-2345-1692",
       mainTeacher:"이현진",
       mainPhone:"010-8722-7357",
       assistant:"배성은",
       assistantPhone:"010-9179-9536",
       env:"TV 보유, Wi-Fi 보유",
-      note:"사전 주차등록 필요, 해당 교육에 대한 기대감 높음"
+      note:"사전 주차등록 필요, 해당 교육에 대한 기대감 높음, 첫날에 회장님 부재, 총무님이 진행"
     },
     {
       id:"samsung",
@@ -102,14 +102,14 @@
       topic:"스마트폰 기초교실",
       topicKey:"basic",
       managerName:"김도균",
-      managerRole:"경로당 회장",
+      managerRole:"회장님",
       managerPhone:"010-5254-3888",
       mainTeacher:"이현진",
       mainPhone:"010-8722-7357",
       assistant:"김현주",
       assistantPhone:"010-9043-3392",
-      env:"",
-      note:""
+      env:"TV 보유, Wi-Fi 보유",
+      note:"주차가능"
     },
     {
       id:"forena",
@@ -124,7 +124,7 @@
       endTime:"16:30",
       topic:"스마트폰AI 활용교실",
       topicKey:"ai",
-      managerName:"김길호",
+      managerName:"김길호 회장님",
       managerRole:"",
       managerPhone:"010-8550-2268",
       mainTeacher:"이현진",
@@ -132,7 +132,7 @@
       assistant:"이복윤",
       assistantPhone:"010-8143-4483",
       env:"TV 보유, Wi-Fi 보유",
-      note:""
+      note:"경로당 방문으로 말하고 105동 옆 주차장에 주차"
     },
     {
       id:"geumhwa",
@@ -154,8 +154,8 @@
       mainPhone:"010-8722-7357",
       assistant:"서영훈",
       assistantPhone:"010-3007-8209",
-      env:"Wi-Fi 보유",
-      note:""
+      env:"TV 보유, Wi-Fi 보유",
+      note:"첫날에 회장님 부재, 총무님이 진행"
     },
     {
       id:"whitevil",
@@ -171,14 +171,14 @@
       topic:"스마트폰AI 활용교실",
       topicKey:"ai",
       managerName:"강대홍",
-      managerRole:"회장",
+      managerRole:"회장님",
       managerPhone:"010-5411-4969",
       mainTeacher:"이현진",
       mainPhone:"010-8722-7357",
-      assistant:"미정",
-      assistantPhone:"",
+      assistant:"이신애",
+      assistantPhone:"010-8652-7821",
       env:"TV 보유, Wi-Fi 보유",
-      note:"주차 가능"
+      note:"주차가능, ★★★16일>17일로 수업 변경 확정(보조강사 체크)"
     },
     {
       id:"seohae",
@@ -200,8 +200,8 @@
       mainPhone:"010-8722-7357",
       assistant:"신미경",
       assistantPhone:"010-4556-2049",
-      env:"Wi-Fi 보유",
-      note:""
+      env:"TV 보유, Wi-Fi 보유",
+      note:"★사전에 한 번 더 통화를 원함, 사전 방문 요청"
     },
     {
       id:"epyeonhan",
@@ -217,14 +217,14 @@
       topic:"스마트폰 기초교실",
       topicKey:"basic",
       managerName:"박이환",
-      managerRole:"경로당 회장",
+      managerRole:"회장님",
       managerPhone:"010-5084-7365",
       mainTeacher:"이현진",
       mainPhone:"010-8722-7357",
       assistant:"홍혜란",
       assistantPhone:"010-5062-7410",
-      env:"",
-      note:""
+      env:"TV 보유, Wi-Fi 보유, 스마트 칠판",
+      note:"사전 주차등록 필요, 사전 방문 요청, 커리큘럼 문자로 공유 드림"
     },
     {
       id:"sangrok",
@@ -240,7 +240,7 @@
       topic:"스마트폰AI 활용교실",
       topicKey:"ai",
       managerName:"김은영",
-      managerRole:"회장",
+      managerRole:"회장님",
       managerPhone:"010-3713-8962",
       mainTeacher:"이현진",
       mainPhone:"010-8722-7357",

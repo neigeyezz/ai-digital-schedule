@@ -164,6 +164,7 @@
         <button class="btn" id="printBtn">인쇄</button>
         <button class="btn" id="resetBtn">기본값으로 초기화</button>
         <button class="btn primary" id="addBtn">+ 기관 추가</button>
+        <button class="btn" id="syncBtn" style="background:var(--teal);color:#fff;">📥 코드에 반영</button>
       </div>
     </div>
     <div id="listArea"></div>
@@ -582,6 +583,54 @@
   });
   document.getElementById("printBtn").addEventListener("click", function(){
     window.print();
+  });
+
+  /* ===== 코드에 반영 (동기화) ===== */
+  document.getElementById("syncBtn").addEventListener("click", function(){
+    if(!confirm("현재 수정된 데이터를 schedule-data.js 코드에 반영합니다.\n다운로드된 파일을 프로젝트 폴더에 덮어쓰기 하세요.\n\n진행할까요?")) return;
+
+    // 현재 데이터를 보기 좋은 JS 코드로 변환
+    function formatItem(it){
+      var lines = [];
+      lines.push("    {");
+      var keys = ["id","name","address","target","startDate","endDate","totalSessions","day","startTime","endTime","topic","topicKey","managerName","managerRole","managerPhone","mainTeacher","mainPhone","assistant","assistantPhone","env","note"];
+      keys.forEach(function(k, i){
+        var val = it[k];
+        if(val === undefined || val === null) val = "";
+        if(k === "totalSessions"){
+          lines.push("      " + k + ":" + (parseInt(val,10)||0) + (i<keys.length-1?",":""));
+        } else {
+          var escaped = String(val).replace(/\\/g,"\\\\").replace(/"/g,'\\"');
+          lines.push('      ' + k + ':"' + escaped + '"' + (i<keys.length-1?",":""));
+        }
+      });
+      lines.push("    }");
+      return lines.join("\n");
+    }
+
+    var newDefault = "  var DEFAULT_DATA = [\n" +
+      data.map(function(it){ return formatItem(it); }).join(",\n") +
+      "\n  ];";
+
+    fetch("schedule-data.js").then(function(r){ return r.text(); }).then(function(src){
+      // DEFAULT_DATA 블록을 교체
+      var replaced = src.replace(
+        /  var DEFAULT_DATA = \[[\s\S]*?\n  \];/,
+        newDefault
+      );
+      if(replaced === src){
+        alert("⚠️ DEFAULT_DATA 블록을 찾지 못했습니다.\nLive Server(http)로 열어서 다시 시도해 주세요.");
+        return;
+      }
+      var blob = new Blob([replaced], {type:"application/javascript;charset=utf-8"});
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "schedule-data.js";
+      a.click();
+      toast("schedule-data.js 다운로드 완료! 프로젝트 폴더에 덮어쓰기 하세요.");
+    }).catch(function(err){
+      alert("⚠️ schedule-data.js를 읽지 못했습니다.\nLive Server(http)로 열어서 다시 시도해 주세요.\n\n오류: " + err.message);
+    });
   });
 
   data = HJ.load();
