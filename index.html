@@ -43,6 +43,42 @@
   .next-banner.none{background:var(--card);color:var(--ink);border:1px dashed var(--line);}
   .next-banner.none .tag,.next-banner.none .meta{color:var(--ink-soft);}
 
+  .file-mode-note{
+    margin-top:12px;
+    padding:10px 12px;
+    border-radius:10px;
+    border:1px solid rgba(208,129,80,0.35);
+    background:rgba(208,129,80,0.08);
+    color:var(--ink);
+    font-size:12.5px;
+    line-height:1.5;
+  }
+  .file-mode-note[hidden]{display:none;}
+  .download-target{
+    margin-top:8px;
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    align-items:center;
+    padding:8px 10px;
+    border-radius:8px;
+    background:rgba(17,44,43,0.04);
+    border:1px solid var(--line);
+  }
+  .download-target .label{
+    font-size:11px;
+    color:var(--ink-soft);
+    font-weight:700;
+    letter-spacing:0.02em;
+    text-transform:uppercase;
+  }
+  .download-target .value{
+    font-size:12px;
+    color:var(--ink);
+    font-weight:600;
+    word-break:break-all;
+  }
+
   section.route{margin-top:34px;}
   .section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
   .section-head h2{font-size:18px;}
@@ -77,6 +113,17 @@
     .cal-grid{grid-template-columns:1fr;}
     .cal-col{min-height:auto;}
     .route-line{overflow-x:auto;}
+    .top h1{font-size:26px;line-height:1.2;}
+    .subtitle{font-size:13px;}
+    .nav-links{display:grid;grid-template-columns:1fr;}
+    .nav-links a{display:block;text-align:center;}
+    .toolbar{display:grid;grid-template-columns:1fr 1fr;}
+    .toolbar .btn{width:100%;}
+    .section-head{align-items:flex-start;}
+    .section-head > div{width:100%;}
+    .next-banner{padding:14px 16px;}
+    .next-banner .when{text-align:left;}
+    .download-target{display:grid;grid-template-columns:1fr;}
   }
 
   section.list{margin-top:34px;}
@@ -127,6 +174,15 @@
     </div>
     <h1>이현진 강사님 스케줄 관리</h1>
     <p class="subtitle">스마트폰 교육 순회 강의 · 경기 용인·성남 8개 경로당</p>
+    <div class="file-mode-note" id="fileModeNote" hidden>
+      로컬 파일 모드로 실행 중입니다. 브라우저 보안 때문에 파일 다운로드로 바로 저장되며, 다운로드된 파일을 프로젝트 폴더에 덮어쓰기하면 됩니다.
+      <div class="download-target">
+        <span class="label">파일명</span>
+        <span class="value">schedule-data.js</span>
+        <span class="label">저장 위치</span>
+        <span class="value">프로젝트 루트 폴더</span>
+      </div>
+    </div>
     <div class="nav-links">
       <a href="calendar.html">📅 월별 캘린더</a>
       <a href="curriculum-basic.html">📖 스마트폰 기초교실</a>
@@ -183,9 +239,15 @@
   "use strict";
   var HJ = window.HJ;
   var DOW_NUM = HJ.DOW_NUM;
+  var isFileMode = location.protocol === "file:";
 
   var data = [];
   var editingId = null;
+
+  var fileModeNote = document.getElementById("fileModeNote");
+  if(fileModeNote){
+    fileModeNote.hidden = !isFileMode;
+  }
 
   function persist(showToast){
     HJ.save(data);
@@ -586,10 +648,203 @@
   });
 
   /* ===== 코드에 반영 (동기화) ===== */
-  document.getElementById("syncBtn").addEventListener("click", function(){
-    if(!confirm("현재 수정된 데이터를 schedule-data.js 코드에 반영합니다.\n다운로드된 파일을 프로젝트 폴더에 덮어쓰기 하세요.\n\n진행할까요?")) return;
+  function buildScheduleFileFallback(){
+    var defaultDataText = JSON.stringify(data, null, 2).replace(/</g, "\\u003c");
+    var curriculaText = JSON.stringify(HJ.CURRICULA, null, 2).replace(/</g, "\\u003c");
 
-    // 현재 데이터를 보기 좋은 JS 코드로 변환
+    return [
+      "(function(){",
+      "  \"use strict\";",
+      "",
+      "  var DOW = [\"일\",\"월\",\"화\",\"수\",\"목\",\"금\",\"토\"];",
+      "  var DOW_NUM = {\"일\":0,\"월\":1,\"화\":2,\"수\":3,\"목\":4,\"금\":5,\"토\":6};",
+      "  var STORAGE_KEY = \"hj_schedule_v2\";",
+      "  var HOLIDAYS = [\n    \"2026-09-25\",\n    \"2026-10-05\",\n    \"2026-10-09\"\n  ];",
+      "",
+      "  function isHoliday(date){",
+      "    var key = date.getFullYear()+\"-\"+pad(date.getMonth()+1)+\"-\"+pad(date.getDate());",
+      "    for(var i=0;i<HOLIDAYS.length;i++){",
+      "      if(HOLIDAYS[i]===key) return true;",
+      "    }",
+      "    return false;",
+      "  }",
+      "",
+      "  function generateSessionDates(item){",
+      "    var dowNum = DOW_NUM[item.day];",
+      "    if(dowNum===undefined) return [];",
+      "    var start = parseDate(item.startDate);",
+      "    if(!start) return [];",
+      "    var first = new Date(start);",
+      "    for(var i=0;i<8;i++){",
+      "      if(first.getDay()===dowNum) break;",
+      "      first.setDate(first.getDate()+1);",
+      "    }",
+      "    var totalSessions = item.totalSessions || 99;",
+      "    var sessions = [];",
+      "    var d = new Date(first);",
+      "    var sess = 1;",
+      "    for(var w=0; w<52 && sess<=totalSessions; w++){",
+      "      if(isHoliday(d)){",
+      "        d.setDate(d.getDate()+7);",
+      "        continue;",
+      "      }",
+      "      sessions.push({date:new Date(d), session:sess});",
+      "      sess++;",
+      "      d.setDate(d.getDate()+7);",
+      "    }",
+      "    return sessions;",
+      "  }",
+      "",
+      "  var DEFAULT_DATA = " + defaultDataText + ";",
+      "  var CURRICULA = " + curriculaText + ";",
+      "",
+      "  function load(){",
+      "    try{",
+      "      var raw = localStorage.getItem(STORAGE_KEY);",
+      "      if(raw) return JSON.parse(raw);",
+      "    }catch(e){}",
+      "    return JSON.parse(JSON.stringify(DEFAULT_DATA));",
+      "  }",
+      "  function save(data){",
+      "    try{",
+      "      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));",
+      "    }catch(e){}",
+      "  }",
+      "  function resetToDefault(){",
+      "    var d = JSON.parse(JSON.stringify(DEFAULT_DATA));",
+      "    save(d);",
+      "    return d;",
+      "  }",
+      "  function todayMidnight(){",
+      "    var d = new Date();",
+      "    d.setHours(0,0,0,0);",
+      "    return d;",
+      "  }",
+      "  function parseDate(str){",
+      "    if(!str) return null;",
+      "    var p = str.split(\"-\");",
+      "    if(p.length!==3) return null;",
+      "    return new Date(parseInt(p[0],10), parseInt(p[1],10)-1, parseInt(p[2],10));",
+      "  }",
+      "  function pad(n){ return n<10 ? \"0\"+n : \"\"+n; }",
+      "  function fmtDate(d){",
+      "    if(!d) return \"\";",
+      "    return (d.getMonth()+1)+\"월 \"+d.getDate()+\"일 (\"+DOW[d.getDay()]+\")\";",
+      "  }",
+      "  function fmtDateFull(d){",
+      "    if(!d) return \"\";",
+      "    return d.getFullYear()+\".\"+pad(d.getMonth()+1)+\".\"+pad(d.getDate());",
+      "  }",
+      "  function isSameDate(a,b){",
+      "    return a && b && a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();",
+      "  }",
+      "  function nextOccurrence(item, today){",
+      "    var sessions = generateSessionDates(item);",
+      "    for(var i=0; i<sessions.length; i++){",
+      "      if(sessions[i].date >= today) return sessions[i].date;",
+      "    }",
+      "    return null;",
+      "  }",
+      "  function isToday(item, today){",
+      "    var sessions = generateSessionDates(item);",
+      "    for(var i=0; i<sessions.length; i++){",
+      "      if(isSameDate(sessions[i].date, today)) return true;",
+      "    }",
+      "    return false;",
+      "  }",
+      "  function occursOn(item, date){",
+      "    var sessions = generateSessionDates(item);",
+      "    for(var i=0; i<sessions.length; i++){",
+      "      if(isSameDate(sessions[i].date, date)) return true;",
+      "    }",
+      "    return false;",
+      "  }",
+      "  function sessionNumber(item, date){",
+      "    var sessions = generateSessionDates(item);",
+      "    for(var i=0; i<sessions.length; i++){",
+      "      if(isSameDate(sessions[i].date, date)) return sessions[i].session;",
+      "    }",
+      "    return 0;",
+      "  }",
+      "  function generateWeeks(rangeStart, rangeEnd){",
+      "    var weeks = [];",
+      "    var d = new Date(rangeStart);",
+      "    while(d.getDay() !== 1) d.setDate(d.getDate() - 1);",
+      "    while(d <= rangeEnd){",
+      "      var weekStart = new Date(d);",
+      "      var weekEnd = new Date(d);",
+      "      weekEnd.setDate(weekEnd.getDate() + 6);",
+      "      var month = weekStart.getMonth()+1;",
+      "      var firstOfMonth = new Date(weekStart.getFullYear(), weekStart.getMonth(), 1);",
+      "      var firstMonday = new Date(firstOfMonth);",
+      "      while(firstMonday.getDay() !== 1) firstMonday.setDate(firstMonday.getDate() + 1);",
+      "      if(firstMonday > firstOfMonth){",
+      "        firstMonday.setDate(firstMonday.getDate() - 7);",
+      "      }",
+      "      var weekNum = Math.floor((weekStart - firstMonday) / (7*24*60*60*1000)) + 1;",
+      "      if(weekNum <= 0){ month = weekStart.getMonth()+1; weekNum = Math.ceil(weekStart.getDate() / 7); }",
+      "      var thu = new Date(weekStart);",
+      "      thu.setDate(thu.getDate() + 3);",
+      "      month = thu.getMonth() + 1;",
+      "      var firstOfThuMonth = new Date(thu.getFullYear(), thu.getMonth(), 1);",
+      "      var firstMondayOfThuMonth = new Date(firstOfThuMonth);",
+      "      while(firstMondayOfThuMonth.getDay() !== 1) firstMondayOfThuMonth.setDate(firstMondayOfThuMonth.getDate() + 1);",
+      "      if(firstMondayOfThuMonth.getDate() > 7) firstMondayOfThuMonth.setDate(1);",
+      "      weekNum = Math.floor((weekStart - firstMondayOfThuMonth) / (7*24*60*60*1000)) + 1;",
+      "      if(weekNum <= 0) weekNum = 1;",
+      "      weeks.push({label: month + \"월 \" + weekNum + \"주차\", start: new Date(weekStart), end: new Date(weekEnd)});",
+      "      d.setDate(d.getDate() + 7);",
+      "    }",
+      "    return weeks;",
+      "  }",
+      "  function esc(s){",
+      "    if(s===undefined || s===null) return \"\";",
+      "    return String(s).replace(/&/g,\"&amp;\").replace(/</g,\"&lt;\").replace(/>/g,\"&gt;\").replace(/\"/g,\"&quot;\");",
+      "  }",
+      "",
+      "  window.HJ = {",
+      "    DOW: DOW,",
+      "    DOW_NUM: DOW_NUM,",
+      "    STORAGE_KEY: STORAGE_KEY,",
+      "    HOLIDAYS: HOLIDAYS,",
+      "    DEFAULT_DATA: DEFAULT_DATA,",
+      "    CURRICULA: CURRICULA,",
+      "    load: load,",
+      "    save: save,",
+      "    resetToDefault: resetToDefault,",
+      "    todayMidnight: todayMidnight,",
+      "    parseDate: parseDate,",
+      "    pad: pad,",
+      "    fmtDate: fmtDate,",
+      "    fmtDateFull: fmtDateFull,",
+      "    isSameDate: isSameDate,",
+      "    isHoliday: isHoliday,",
+      "    generateSessionDates: generateSessionDates,",
+      "    nextOccurrence: nextOccurrence,",
+      "    isToday: isToday,",
+      "    occursOn: occursOn,",
+      "    sessionNumber: sessionNumber,",
+      "    generateWeeks: generateWeeks,",
+      "    esc: esc",
+      "  };",
+      "})();"
+    ].join("\n");
+  }
+
+  document.getElementById("syncBtn").addEventListener("click", function(){
+    function triggerDownload(fileContent){
+      var blob = new Blob([fileContent], {type:"application/javascript;charset=utf-8"});
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "schedule-data.js";
+      a.click();
+      if(isFileMode){
+        toast("로컬 파일 모드: 다운로드된 schedule-data.js를 프로젝트 폴더에 덮어쓰기 하세요.");
+      } else {
+        toast("schedule-data.js 다운로드 완료! 프로젝트 폴더에 덮어쓰기 하세요.");
+      }
+    }
+
     function formatItem(it){
       var lines = [];
       lines.push("    {");
@@ -612,24 +867,29 @@
       data.map(function(it){ return formatItem(it); }).join(",\n") +
       "\n  ];";
 
+    var confirmMessage = isFileMode
+      ? "로컬 파일 모드로 실행 중입니다.\n현재 수정 내용을 schedule-data.js로 바로 다운로드해 프로젝트 폴더에 덮어쓰기 하세요.\n\n진행할까요?"
+      : "현재 수정된 데이터를 schedule-data.js 코드에 반영합니다.\n다운로드된 파일을 프로젝트 폴더에 덮어쓰기 하세요.\n\n진행할까요?";
+
+    if(!confirm(confirmMessage)) return;
+
+    if(isFileMode){
+      triggerDownload(buildScheduleFileFallback());
+      return;
+    }
+
     fetch("schedule-data.js").then(function(r){ return r.text(); }).then(function(src){
-      // DEFAULT_DATA 블록을 교체
       var replaced = src.replace(
         /  var DEFAULT_DATA = \[[\s\S]*?\n  \];/,
         newDefault
       );
       if(replaced === src){
-        alert("⚠️ DEFAULT_DATA 블록을 찾지 못했습니다.\nLive Server(http)로 열어서 다시 시도해 주세요.");
+        triggerDownload(buildScheduleFileFallback());
         return;
       }
-      var blob = new Blob([replaced], {type:"application/javascript;charset=utf-8"});
-      var a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "schedule-data.js";
-      a.click();
-      toast("schedule-data.js 다운로드 완료! 프로젝트 폴더에 덮어쓰기 하세요.");
+      triggerDownload(replaced);
     }).catch(function(err){
-      alert("⚠️ schedule-data.js를 읽지 못했습니다.\nLive Server(http)로 열어서 다시 시도해 주세요.\n\n오류: " + err.message);
+      triggerDownload(buildScheduleFileFallback());
     });
   });
 
