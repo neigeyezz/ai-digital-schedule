@@ -86,7 +86,7 @@
       assistant:"배성은",
       assistantPhone:"010-9179-9536",
       env:"TV 보유, Wi-Fi 보유",
-      note:"사전 주차등록 필요, 해당 교육에 대한 기대감 높음, 첫날에 회장님 부재, 총무님이 진행"
+      note:"사전 주차등록 필요 / 첫날 회장님 부재, 총무님이 진행 / 회원가입 완료시키기, 수업에 등록시키기"
     },
     {
       id:"samsung",
@@ -132,7 +132,7 @@
       assistant:"이복윤",
       assistantPhone:"010-8143-4483",
       env:"TV 보유, Wi-Fi 보유",
-      note:"경로당 방문으로 말하고 105동 옆 주차장에 주차"
+      note:"주차등록 완료, 105동 옆 주차장에 주차"
     },
     {
       id:"geumhwa",
@@ -178,7 +178,7 @@
       assistant:"이신애",
       assistantPhone:"010-8652-7821",
       env:"TV 보유, Wi-Fi 보유",
-      note:"주차가능, ★★★16일>17일로 수업 변경 확정(보조강사 체크)"
+      note:"주차가능, 16일>17일로 변경"
     },
     {
       id:"seohae",
@@ -244,8 +244,8 @@
       managerPhone:"010-3713-8962",
       mainTeacher:"이현진",
       mainPhone:"010-8722-7357",
-      assistant:"미정",
-      assistantPhone:"",
+      assistant:"김윤정",
+      assistantPhone:"010-3338-7520",
       env:"TV 보유, Wi-Fi 보유",
       note:"사전 주차등록 필요, 현재 스마트폰 교육 중 AI 교육을 더 듣고 싶어서 신청"
     }
