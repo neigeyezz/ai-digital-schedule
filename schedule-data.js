@@ -67,7 +67,7 @@
   var DEFAULT_DATA = [
     {
       id:"jukjeon",
-      name:"죽전프리미어포레아파트경로당",
+      name:"죽전프리미어포레아파트  경로당",
       address:"경기도 용인시 수지구 대지로 187 (죽전동), 경로당 1층",
       target:"시니어 10명",
       startDate:"2026-09-14",
@@ -86,7 +86,7 @@
       assistant:"배성은",
       assistantPhone:"010-9179-9536",
       env:"TV 보유, Wi-Fi 보유",
-      note:"사전 주차등록 필요 / 첫날 회장님 부재, 총무님이 진행 / 회원가입 완료시키기, 수업에 등록시키기"
+      note:"주차사전등록"
     },
     {
       id:"samsung",
@@ -113,7 +113,7 @@
     },
     {
       id:"forena",
-      name:"포레나광교상현아파트경로당",
+      name:"포레나광교상현아파트 경로당",
       address:"경기도 용인시 수지구 수지로 17 (상현동), 경로당 1층",
       target:"시니어 15명",
       startDate:"2026-09-15",
@@ -136,7 +136,7 @@
     },
     {
       id:"geumhwa",
-      name:"금화대우현대아파트경로당",
+      name:"금화대우현대아파트 경로당",
       address:"경기 용인시 기흥구 금화로82번길 14 금화대우현대아파트경로당",
       target:"시니어",
       startDate:"2026-09-30",
@@ -159,7 +159,7 @@
     },
     {
       id:"whitevil",
-      name:"하얀마을 화이트빌경로당",
+      name:"하얀마을화이트빌 경로당",
       address:"성남시 분당구 금곡로 39(구미동), 관리사무소건물",
       target:"시니어 8명",
       startDate:"2026-09-16",
@@ -228,7 +228,7 @@
     },
     {
       id:"sangrok",
-      name:"상록마을우성아파트경로당",
+      name:"상록마을우성아파트 경로당",
       address:"성남시 분당구 내정로 55(정자동), 경로당 1층",
       target:"시니어 20명",
       startDate:"2026-09-18",
@@ -248,6 +248,29 @@
       assistantPhone:"010-3338-7520",
       env:"TV 보유, Wi-Fi 보유",
       note:"사전 주차등록 필요, 현재 스마트폰 교육 중 AI 교육을 더 듣고 싶어서 신청"
+    },
+    {
+      id:"item_1790587451596",
+      name:"신봉마을LG빌리지5차A단지아파트 경로당",
+      address:"경기 용인시 수지구 신봉1로 112-2 신봉마을LG빌리지5차A단지 아파트 경로당, 경로당1층 (511동 옆 관리동)",
+      target:"시니어 7명",
+      startDate:"2026-10-12",
+      endDate:"2026-12-07",
+      totalSessions:9,
+      day:"월",
+      startTime:"09:30",
+      endTime:"00:00",
+      topic:"스마트폰 기초교실 →",
+      topicKey:"",
+      managerName:"백상욱",
+      managerRole:"총무",
+      managerPhone:"010-7399-7063",
+      mainTeacher:"이현진",
+      mainPhone:"010-8722-7357",
+      assistant:"이윤경",
+      assistantPhone:"010-2907-1438",
+      env:"",
+      note:""
     }
   ];
 
