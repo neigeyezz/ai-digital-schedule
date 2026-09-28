@@ -9,6 +9,8 @@
   var DOW = ["일","월","화","수","목","금","토"];
   var DOW_NUM = {"일":0,"월":1,"화":2,"수":3,"목":4,"금":5,"토":6};
   var STORAGE_KEY = "hj_schedule_v2";
+  var DATA_VERSION_KEY = "hj_schedule_data_version";
+  var DATA_VERSION = "2026-09-28-1";
 
   /* ===== 휴일 목록 (수업 제외, 해당 수업은 한 주씩 뒤로 밀림) ===== */
   var HOLIDAYS = [
@@ -248,6 +250,29 @@
       assistantPhone:"010-3338-7520",
       env:"TV 보유, Wi-Fi 보유",
       note:"사전 주차등록 필요, 현재 스마트폰 교육 중 AI 교육을 더 듣고 싶어서 신청"
+    },
+    {
+      id:"sinbong",
+      name:"신봉마을LG빌리지5차A단지아파트경로당",
+      address:"경기 용인시 수지구 신봉1로 112-2 신봉마을LG빌리지5차A단지 아파트 경로당, 경로당1층 (511동 옆 관리동)",
+      target:"시니어 7명",
+      startDate:"2026-10-12",
+      endDate:"2026-12-07",
+      totalSessions:9,
+      day:"월",
+      startTime:"09:30",
+      endTime:"12:00",
+      topic:"스마트폰 기초교실",
+      topicKey:"basic",
+      managerName:"백상욱",
+      managerRole:"총무",
+      managerPhone:"010-7399-7063",
+      mainTeacher:"이현진",
+      mainPhone:"010-8722-7357",
+      assistant:"이윤경",
+      assistantPhone:"010-2907-1438",
+      env:"",
+      note:""
     }
   ];
 
@@ -292,16 +317,36 @@
     }
   };
 
+  function isValidStoredData(value){
+    return Array.isArray(value) && value.length > 0 && value.every(function(item){
+      return item && typeof item === "object" && typeof item.id === "string" && typeof item.name === "string";
+    });
+  }
+
   function load(){
     try{
+      var savedVersion = localStorage.getItem(DATA_VERSION_KEY);
       var raw = localStorage.getItem(STORAGE_KEY);
-      if(raw) return JSON.parse(raw);
+      if(savedVersion !== DATA_VERSION){
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.setItem(DATA_VERSION_KEY, DATA_VERSION);
+        return JSON.parse(JSON.stringify(DEFAULT_DATA));
+      }
+      if(raw){
+        var parsed = JSON.parse(raw);
+        if(isValidStoredData(parsed)) return parsed;
+      }
+    }catch(e){}
+
+    try{
+      localStorage.setItem(DATA_VERSION_KEY, DATA_VERSION);
     }catch(e){}
     return JSON.parse(JSON.stringify(DEFAULT_DATA));
   }
   function save(data){
     try{
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      localStorage.setItem(DATA_VERSION_KEY, DATA_VERSION);
     }catch(e){}
   }
   function resetToDefault(){
