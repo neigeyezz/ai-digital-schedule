@@ -669,6 +669,15 @@
       "    return false;",
       "  }",
       "",
+      "  function isExcluded(date, excludeDates){",
+      "    if(!excludeDates || !excludeDates.length) return false;",
+      "    var key = date.getFullYear()+\"-\"+pad(date.getMonth()+1)+\"-\"+pad(date.getDate());",
+      "    for(var i=0;i<excludeDates.length;i++){",
+      "      if(excludeDates[i]===key) return true;",
+      "    }",
+      "    return false;",
+      "  }",
+      "",
       "  function generateSessionDates(item){",
       "    var dowNum = DOW_NUM[item.day];",
       "    if(dowNum===undefined) return [];",
@@ -684,7 +693,7 @@
       "    var d = new Date(first);",
       "    var sess = 1;",
       "    for(var w=0; w<52 && sess<=totalSessions; w++){",
-      "      if(isHoliday(d)){",
+      "      if(isHoliday(d) || isExcluded(d, item.excludeDates)){",
       "        d.setDate(d.getDate()+7);",
       "        continue;",
       "      }",
@@ -853,12 +862,17 @@
         var val = it[k];
         if(val === undefined || val === null) val = "";
         if(k === "totalSessions"){
-          lines.push("      " + k + ":" + (parseInt(val,10)||0) + (i<keys.length-1?",":""));
+          lines.push("      " + k + ":" + (parseInt(val,10)||0) + ",");
         } else {
           var escaped = String(val).replace(/\\/g,"\\\\").replace(/"/g,'\\"');
-          lines.push('      ' + k + ':"' + escaped + '"' + (i<keys.length-1?",":""));
+          lines.push('      ' + k + ':"' + escaped + '"' + ',');
         }
       });
+      if(it.excludeDates && it.excludeDates.length > 0){
+        lines.push('      excludeDates:[' + it.excludeDates.map(function(d){ return '"'+d+'"'; }).join(',') + ']');
+      }
+      var lastIdx = lines.length - 1;
+      lines[lastIdx] = lines[lastIdx].replace(/,\s*$/, '');
       lines.push("    }");
       return lines.join("\n");
     }
