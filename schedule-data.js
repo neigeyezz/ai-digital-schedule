@@ -10,7 +10,7 @@
   var DOW_NUM = { "일": 0, "월": 1, "화": 2, "수": 3, "목": 4, "금": 5, "토": 6 };
   var STORAGE_KEY = "hj_schedule_v2";
   var DATA_VERSION_KEY = "hj_schedule_data_version";
-  var DATA_VERSION = "2026-10-14-3";
+  var DATA_VERSION = "2026-10-22-1";
 
   /* ===== 휴일 목록 (수업 제외, 해당 수업은 한 주씩 뒤로 밀림) ===== */
   var HOLIDAYS = [
@@ -98,7 +98,7 @@
       assistant: "배성은",
       assistantPhone: "010-9179-9536",
       env: "TV 보유, Wi-Fi 보유",
-      note: "♠변경된 스케줄 안내"
+      note: "♠AI수업 나가기or네비"
     },
     {
       id: "jukjeon_ai",
@@ -121,7 +121,7 @@
       assistant: "배성은",
       assistantPhone: "010-9179-9536",
       env: "TV 보유, Wi-Fi 보유",
-      note: "♠변경된 스케줄 안내"
+      note: "♠AI수업 나가기or네비"
     },
     {
       id: "samsung",
@@ -144,7 +144,7 @@
       assistant: "김현주",
       assistantPhone: "010-9043-3392",
       env: "TV 보유, Wi-Fi 보유",
-      note: "♠변경된 스케줄 안내"
+      note: "20일:카메라"
     },
     {
       id: "samsung_ai",
@@ -167,7 +167,7 @@
       assistant: "김현주",
       assistantPhone: "010-9043-3392",
       env: "TV 보유, Wi-Fi 보유",
-      note: "♠변경된 스케줄 안내"
+      note: "20일:카메라"
     },
     {
       id: "forena",
@@ -190,7 +190,7 @@
       assistant: "이복윤",
       assistantPhone: "010-8143-4483",
       env: "TV 보유, Wi-Fi 보유",
-      note: "●안내 NO"
+      note: "20일:AI글쓰기"
     },
     {
       id: "geumhwa",
@@ -213,7 +213,7 @@
       assistant: "서영훈",
       assistantPhone: "010-3007-8209",
       env: "TV 보유, Wi-Fi 보유",
-      note: "●안내 NO(오전 시간 부족)"
+      note: "●안내 NO(오전 시간 부족) / 20일:카메라"
     },
     {
       id: "whitevil",
@@ -236,7 +236,7 @@
       assistant: "이신애",
       assistantPhone: "010-8652-7821",
       env: "TV 보유, Wi-Fi 보유",
-      note: "●자체수업 회신 못 받음"
+      note: "●수업확장X / 20일:WiFi,QR코드"
     },
     {
       id: "seohae",
@@ -259,7 +259,7 @@
       assistant: "신미경",
       assistantPhone: "010-4556-2049",
       env: "TV 보유, Wi-Fi 보유",
-      note: "●안내 NO(오전 시간 부족)"
+      note: "●매주 화 5:30~7:30으로 연장 추진 / 20일:네비"
     },
     {
       id: "epyeonhan",
@@ -294,7 +294,7 @@
       totalSessions: 7,
       day: "목",
       startTime: "15:00",
-      endTime: "17:30",
+      endTime: "17:00",
       topic: "스마트폰 AI 활용교실",
       topicKey: "ai",
       excludeDates: ["2026-11-05"],
@@ -306,7 +306,7 @@
       assistant: "홍혜란",
       assistantPhone: "010-5062-7410",
       env: "TV 보유, Wi-Fi 보유, 스마트 칠판",
-      note: "★★11/5 →11/6(금) 10시~12시로 수업 변경★★"
+      note: "★★11/5 →11/6(금) 10시~12시로 수업 변경★★ / 20일:카메라"
     },
     {
       id: "sangrok",
@@ -352,7 +352,7 @@
       assistant: "이윤경",
       assistantPhone: "010-2907-1438",
       env: "",
-      note: "●안내 NO(오전 시간 부족) / ★2주차에 대체강사 필요"
+      note: "●안내 NO(오전 시간 부족) ★수or금 안내하기!!!"
     }
   ];
 
