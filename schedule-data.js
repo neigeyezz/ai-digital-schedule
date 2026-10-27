@@ -10,7 +10,7 @@
   var DOW_NUM = { "일": 0, "월": 1, "화": 2, "수": 3, "목": 4, "금": 5, "토": 6 };
   var STORAGE_KEY = "hj_schedule_v2";
   var DATA_VERSION_KEY = "hj_schedule_data_version";
-  var DATA_VERSION = "2026-10-22-1";
+  var DATA_VERSION = "2026-10-27-2";
 
   /* ===== 휴일 목록 (수업 제외, 해당 수업은 한 주씩 뒤로 밀림) ===== */
   var HOLIDAYS = [
@@ -45,6 +45,12 @@
   }
 
   function generateSessionDates(item) {
+    if (item.customDates && item.customDates.length) {
+      return item.customDates.map(function (dStr, idx) {
+        return { date: parseDate(dStr), session: idx + 1 };
+      });
+    }
+
     var dowNum = DOW_NUM[item.day];
     if (dowNum === undefined) return [];
     var start = parseDate(item.startDate);
@@ -98,7 +104,7 @@
       assistant: "배성은",
       assistantPhone: "010-9179-9536",
       env: "TV 보유, Wi-Fi 보유",
-      note: "♠AI수업 나가기or네비"
+      note: "10/27:제미나이 깔기,켜기"
     },
     {
       id: "jukjeon_ai",
@@ -121,7 +127,7 @@
       assistant: "배성은",
       assistantPhone: "010-9179-9536",
       env: "TV 보유, Wi-Fi 보유",
-      note: "♠AI수업 나가기or네비"
+      note: "♠10/27:제미나이 깔기,켜기"
     },
     {
       id: "samsung",
@@ -144,7 +150,7 @@
       assistant: "김현주",
       assistantPhone: "010-9043-3392",
       env: "TV 보유, Wi-Fi 보유",
-      note: "20일:카메라"
+      note: "27일:네비"
     },
     {
       id: "samsung_ai",
@@ -167,7 +173,7 @@
       assistant: "김현주",
       assistantPhone: "010-9043-3392",
       env: "TV 보유, Wi-Fi 보유",
-      note: "20일:카메라"
+      note: "27일:네비"
     },
     {
       id: "forena",
@@ -213,7 +219,7 @@
       assistant: "서영훈",
       assistantPhone: "010-3007-8209",
       env: "TV 보유, Wi-Fi 보유",
-      note: "●안내 NO(오전 시간 부족) / 20일:카메라"
+      note: "20일:카메라"
     },
     {
       id: "whitevil",
@@ -259,7 +265,39 @@
       assistant: "신미경",
       assistantPhone: "010-4556-2049",
       env: "TV 보유, Wi-Fi 보유",
-      note: "●매주 화 5:30~7:30으로 연장 추진 / 20일:네비"
+      note: "20일:네비"
+    },
+    {
+      id: "seohae_ai",
+      name: "서해그랑블2차 경로당",
+      address: "경기 용인시 기흥구 언동로217번길 31 서해그랑블2차 경로당",
+      target: "시니어 10명",
+      startDate: "2026-10-27",
+      endDate: "2026-12-08",
+      totalSessions: 7,
+      day: "화",
+      startTime: "17:30",
+      endTime: "19:30",
+      topic: "스마트폰 AI 활용교실",
+      topicKey: "ai",
+      customDates: [
+        "2026-10-27",
+        "2026-11-04",
+        "2026-11-10",
+        "2026-11-17",
+        "2026-11-24",
+        "2026-12-01",
+        "2026-12-08"
+      ],
+      managerName: "유병주",
+      managerRole: "회장님",
+      managerPhone: "010-9059-3932",
+      mainTeacher: "이현진",
+      mainPhone: "010-8722-7357",
+      assistant: "신미경",
+      assistantPhone: "010-4556-2049",
+      env: "TV 보유, Wi-Fi 보유",
+      note: "★★2회차: 11/4(수) 17:30~19:30 진행★★"
     },
     {
       id: "epyeonhan",
@@ -317,8 +355,8 @@
       endDate: "2026-12-04",
       totalSessions: 10,
       day: "금",
-      startTime: "14:00",
-      endTime: "16:30",
+      startTime: "13:30",
+      endTime: "16:00",
       topic: "스마트폰AI 활용교실",
       topicKey: "ai",
       managerName: "김은영",

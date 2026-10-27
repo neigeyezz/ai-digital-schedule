@@ -679,6 +679,11 @@
       "  }",
       "",
       "  function generateSessionDates(item){",
+      "    if(item.customDates && item.customDates.length){",
+      "      return item.customDates.map(function(dStr, idx){",
+      "        return {date:parseDate(dStr), session:idx+1};",
+      "      });",
+      "    }",
       "    var dowNum = DOW_NUM[item.day];",
       "    if(dowNum===undefined) return [];",
       "    var start = parseDate(item.startDate);",
@@ -869,7 +874,10 @@
         }
       });
       if(it.excludeDates && it.excludeDates.length > 0){
-        lines.push('      excludeDates:[' + it.excludeDates.map(function(d){ return '"'+d+'"'; }).join(',') + ']');
+        lines.push('      excludeDates:[' + it.excludeDates.map(function(d){ return '"'+d+'"'; }).join(',') + '],');
+      }
+      if(it.customDates && it.customDates.length > 0){
+        lines.push('      customDates:[' + it.customDates.map(function(d){ return '"'+d+'"'; }).join(',') + '],');
       }
       var lastIdx = lines.length - 1;
       lines[lastIdx] = lines[lastIdx].replace(/,\s*$/, '');

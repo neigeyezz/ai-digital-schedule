@@ -144,10 +144,14 @@
         lesson = curriculum.lessons[sessNo - 1];
       }
 
+      var dowName = HJ.DOW[date.getDay()];
       html += '<div class="modal-item">';
-      html += '<div class="mi-name">'+HJ.esc(it.name)+' <span class="badge">'+HJ.esc(it.day)+'요일</span></div>';
+      html += '<div class="mi-name">'+HJ.esc(it.name)+' <span class="badge">'+HJ.esc(dowName)+'요일</span></div>';
       html += '<div class="mi-time">'+HJ.esc(it.startTime)+' – '+HJ.esc(it.endTime)+'</div>';
       html += '<div class="mi-topic">강의주제: '+HJ.esc(it.topic)+'</div>';
+      if(it.note){
+        html += '<div class="mi-note" style="font-size:12px;color:var(--clay);margin-top:4px;font-weight:600;">'+HJ.esc(it.note)+'</div>';
+      }
 
       if(lesson){
         html += '<div class="mi-lesson">';
