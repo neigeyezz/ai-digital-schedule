@@ -4,10 +4,10 @@ AI 디지털배움터의 수업 일정을 관리하는 웹 애플리케이션입
 
 ## ✨ 주요 기능
 
-- 🏫 **9개 기관** 수업 스케줄 통합 관리
+- 🏫 **9개 기관 + 온라인 클래스** 수업 스케줄 통합 관리
 - 📆 **주간 드롭다운** 으로 빠른 일정 확인
 - 📅 **월별 달력 팝업** 으로 전체 일정 조회
-- 📚 **커리큘럼 페이지** (기초반, AI반)
+- 📚 **커리큘럼 페이지** (기초반, AI반, Vrew AI영상제작)
 - 🚫 공휴일 자동 제외 및 회차 밀림 처리
 
 ## 🔗 배포 링크
@@ -25,9 +25,9 @@ AI 디지털배움터의 수업 일정을 관리하는 웹 애플리케이션입
 ```
 ├── index.html              # 메인 스케줄 페이지
 ├── calendar.html            # 월별 달력 팝업
-├── curriculum-start.html    # 커리큘럼 - 시작반
-├── curriculum-basic.html    # 커리큘럼 - 기초반
-├── curriculum-ai.html       # 커리큘럼 - AI반
+├── curriculum-basic.html    # 커리큘럼 - 스마트폰 기초교실
+├── curriculum-ai.html       # 커리큘럼 - 스마트폰 AI 활용교실
+├── curriculum-vrew.html     # 커리큘럼 - Vrew AI영상제작 온라인 클래스
 ├── schedule-data.js         # 스케줄 데이터
 ├── styles.css               # 스타일시트
 └── README.md                # 이 파일

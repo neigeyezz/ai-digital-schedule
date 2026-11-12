@@ -173,7 +173,7 @@
       <div class="today-line" id="todayLine"></div>
     </div>
     <h1>이현진 강사님 스케줄 관리</h1>
-    <p class="subtitle">스마트폰 교육 순회 강의 · 경기 용인·성남 9개 경로당</p>
+    <p class="subtitle">스마트폰 &amp; AI 교육 순회 강의 (경기 용인·성남 9개 경로당) + 온라인 줌 클래스</p>
     <div class="file-mode-note" id="fileModeNote" hidden>
       로컬 파일 모드로 실행 중입니다. 브라우저 보안 때문에 파일 다운로드로 바로 저장되며, 다운로드된 파일을 프로젝트 폴더에 덮어쓰기하면 됩니다.
       <div class="download-target">
@@ -187,6 +187,7 @@
       <a href="calendar.html">📅 월별 캘린더</a>
       <a href="curriculum-basic.html">📖 스마트폰 기초교실</a>
       <a href="curriculum-ai.html">🤖 스마트폰 AI 활용교실</a>
+      <a href="curriculum-vrew.html">🎬 브루 AI영상제작</a>
     </div>
 
     <div class="stat-strip" id="statStrip"></div>
@@ -267,7 +268,7 @@
 
   function curriculumLink(item){
     var c = HJ.CURRICULA[item.topicKey];
-    if(!c) return esc(item.topic);
+    if(!c || !c.file) return esc(item.topic);
     return '<a href="'+c.file+'">'+esc(item.topic)+' →</a>';
   }
 
@@ -281,11 +282,17 @@
     });
     var withAssistant = data.filter(function(it){ return it.assistant && it.assistant.trim() && it.assistant !== "미정"; }).length;
     var days = {};
-    data.forEach(function(it){ days[it.day]=true; });
+    data.forEach(function(it){
+      if(it.day){
+        ["월","화","수","목","금","토","일"].forEach(function(d){
+          if(it.day.indexOf(d)!==-1) days[d] = true;
+        });
+      }
+    });
 
     var statStrip = document.getElementById("statStrip");
     statStrip.innerHTML =
-      stat(data.length,"전체 기관") +
+      stat(data.length,"전체 강좌") +
       stat(active.length,"진행 중인 강좌") +
       stat(Object.keys(days).length,"주간 출강 요일") +
       stat(withAssistant,"보조강사 동반");
@@ -330,8 +337,12 @@
     var order = ["월","화","수","목","금","토","일"];
     var byDay = {};
     data.forEach(function(it){
-      byDay[it.day] = byDay[it.day] || [];
-      byDay[it.day].push(it);
+      order.forEach(function(d){
+        if((it.day||"").indexOf(d) !== -1){
+          byDay[d] = byDay[d] || [];
+          byDay[d].push(it);
+        }
+      });
     });
     var el = document.getElementById("routeLine");
     el.innerHTML = "";
@@ -427,10 +438,12 @@
           if(curriculum && curriculum.lessons && sessNo > 0 && sessNo <= curriculum.lessons.length){
             lessonTitle = curriculum.lessons[sessNo-1].title;
           }
+          var whoLine = it.assistant && it.assistant !== "미정" ?"보조 "+esc(it.assistant):"주강사 단독";
+          if(it.address && it.address.indexOf("온라인") !== -1) whoLine += " · 온라인";
           html += '<div class="cal-block">'+
             '<div class="time">'+esc(it.startTime)+'–'+esc(it.endTime)+'</div>'+
             '<div class="name">'+esc(it.name)+'</div>'+
-            '<div class="who">'+(it.assistant && it.assistant !== "미정" ?"보조 "+esc(it.assistant):"주강사 단독")+'</div>'+
+            '<div class="who">'+whoLine+'</div>'+
             (sessNo > 0 ? '<div class="session-tag">'+sessNo+'회차'+(lessonTitle?' · '+esc(lessonTitle):'')+'</div>' : '')+
           '</div>';
         });
@@ -657,8 +670,10 @@
       "  \"use strict\";",
       "",
       "  var DOW = [\"일\",\"월\",\"화\",\"수\",\"목\",\"금\",\"토\"];",
-      "  var DOW_NUM = {\"일\":0,\"월\":1,\"화\":2,\"수\":3,\"목\":4,\"금\":5,\"토\":6};",
+      "  var DOW_NUM = {\"일\":0,\"월\":1,\"화\":2,\"수\":3,\"목\":4,\"금\":5,\"토\":6,\"수·목\":3.5};",
       "  var STORAGE_KEY = \"hj_schedule_v2\";",
+      "  var DATA_VERSION_KEY = \"hj_schedule_data_version\";",
+      "  var DATA_VERSION = \"2026-11-12-3\";",
       "  var HOLIDAYS = [\n    \"2026-09-25\",\n    \"2026-10-05\",\n    \"2026-10-09\"\n  ];",
       "",
       "  function isHoliday(date){",
@@ -712,16 +727,33 @@
       "  var DEFAULT_DATA = " + defaultDataText + ";",
       "  var CURRICULA = " + curriculaText + ";",
       "",
+      "  function isValidStoredData(value){",
+      "    return Array.isArray(value) && value.length > 0 && value.every(function(item){",
+      "      return item && typeof item === \"object\" && typeof item.id === \"string\" && typeof item.name === \"string\";",
+      "    });",
+      "  }",
+      "",
       "  function load(){",
       "    try{",
+      "      var savedVersion = localStorage.getItem(DATA_VERSION_KEY);",
       "      var raw = localStorage.getItem(STORAGE_KEY);",
-      "      if(raw) return JSON.parse(raw);",
+      "      if(savedVersion !== DATA_VERSION){",
+      "        localStorage.removeItem(STORAGE_KEY);",
+      "        localStorage.setItem(DATA_VERSION_KEY, DATA_VERSION);",
+      "        return JSON.parse(JSON.stringify(DEFAULT_DATA));",
+      "      }",
+      "      if(raw){",
+      "        var parsed = JSON.parse(raw);",
+      "        if(isValidStoredData(parsed)) return parsed;",
+      "      }",
       "    }catch(e){}",
+      "    try{ localStorage.setItem(DATA_VERSION_KEY, DATA_VERSION); }catch(e){}",
       "    return JSON.parse(JSON.stringify(DEFAULT_DATA));",
       "  }",
       "  function save(data){",
       "    try{",
       "      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));",
+      "      localStorage.setItem(DATA_VERSION_KEY, DATA_VERSION);",
       "    }catch(e){}",
       "  }",
       "  function resetToDefault(){",

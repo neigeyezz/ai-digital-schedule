@@ -7,10 +7,10 @@
   "use strict";
 
   var DOW = ["일", "월", "화", "수", "목", "금", "토"];
-  var DOW_NUM = { "일": 0, "월": 1, "화": 2, "수": 3, "목": 4, "금": 5, "토": 6 };
+  var DOW_NUM = { "일": 0, "월": 1, "화": 2, "수": 3, "목": 4, "금": 5, "토": 6, "수·목": 3.5 };
   var STORAGE_KEY = "hj_schedule_v2";
   var DATA_VERSION_KEY = "hj_schedule_data_version";
-  var DATA_VERSION = "2026-10-27-2";
+  var DATA_VERSION = "2026-11-12-3";
 
   /* ===== 휴일 목록 (수업 제외, 해당 수업은 한 주씩 뒤로 밀림) ===== */
   var HOLIDAYS = [
@@ -104,7 +104,7 @@
       assistant: "배성은",
       assistantPhone: "010-9179-9536",
       env: "TV 보유, Wi-Fi 보유",
-      note: "10/27:제미나이 깔기,켜기"
+      note: "●3:제미나이화면,광고구별법/9:TV유튜브연결"
     },
     {
       id: "jukjeon_ai",
@@ -127,7 +127,7 @@
       assistant: "배성은",
       assistantPhone: "010-9179-9536",
       env: "TV 보유, Wi-Fi 보유",
-      note: "♠10/27:제미나이 깔기,켜기"
+      note: "●3:제미나이화면,광고구별법/9:TV유튜브연결"
     },
     {
       id: "samsung",
@@ -150,7 +150,7 @@
       assistant: "김현주",
       assistantPhone: "010-9043-3392",
       env: "TV 보유, Wi-Fi 보유",
-      note: "27일:네비"
+      note: "●3:AI입문+카톡/10:제미나이화면"
     },
     {
       id: "samsung_ai",
@@ -173,7 +173,7 @@
       assistant: "김현주",
       assistantPhone: "010-9043-3392",
       env: "TV 보유, Wi-Fi 보유",
-      note: "27일:네비"
+      note: "●3:AI입문+카톡/10:제미나이화면"
     },
     {
       id: "forena",
@@ -196,7 +196,7 @@
       assistant: "이복윤",
       assistantPhone: "010-8143-4483",
       env: "TV 보유, Wi-Fi 보유",
-      note: "20일:AI글쓰기"
+      note: "●4:AI이해/재복습:동영상시청(로봇수술,변호사,신의영역)/10:AI이미지생성"
     },
     {
       id: "geumhwa",
@@ -219,7 +219,7 @@
       assistant: "서영훈",
       assistantPhone: "010-3007-8209",
       env: "TV 보유, Wi-Fi 보유",
-      note: "20일:카메라"
+      note: "●28:카카오/11:WiFi"
     },
     {
       id: "whitevil",
@@ -242,7 +242,7 @@
       assistant: "이신애",
       assistantPhone: "010-8652-7821",
       env: "TV 보유, Wi-Fi 보유",
-      note: "●수업확장X / 20일:WiFi,QR코드"
+      note: "●28:제미나이입문,카카오T 택시/11:지도"
     },
     {
       id: "seohae",
@@ -265,7 +265,7 @@
       assistant: "신미경",
       assistantPhone: "010-4556-2049",
       env: "TV 보유, Wi-Fi 보유",
-      note: "20일:네비"
+      note: "●20:네비, 6:설정>기능알아보기, 유튜브광고구별법(PDF뷰어) / 12:카톡"
     },
     {
       id: "seohae_ai",
@@ -297,7 +297,7 @@
       assistant: "신미경",
       assistantPhone: "010-4556-2049",
       env: "TV 보유, Wi-Fi 보유",
-      note: "★★2회차: 11/4(수) 17:30~19:30 진행★★"
+      note: "●2회차: 11/4(수) 17:30~19:30 / 4:카톡"
     },
     {
       id: "epyeonhan",
@@ -320,7 +320,7 @@
       assistant: "홍혜란",
       assistantPhone: "010-5062-7410",
       env: "TV 보유, Wi-Fi 보유, 스마트 칠판",
-      note: "★★11/5 →11/6(금) 10시~12시로 수업 변경★★"
+      note: "●11/5 →11/6(금) / 20:카메라 / 6:유튜브광고구별법(PDF뷰어),광고의이해,앱삭제및구별"
     },
     {
       id: "epyeonhan_ai",
@@ -344,7 +344,7 @@
       assistant: "홍혜란",
       assistantPhone: "010-5062-7410",
       env: "TV 보유, Wi-Fi 보유, 스마트 칠판",
-      note: "★★11/5 →11/6(금) 10시~12시로 수업 변경★★ / 20일:카메라"
+      note: "●11/5 →11/6(금) / 20:카메라 / 6:유튜브광고구별법(PDF뷰어),광고의이해,앱삭제및구별"
     },
     {
       id: "sangrok",
@@ -367,11 +367,11 @@
       assistant: "김윤정",
       assistantPhone: "010-3338-7520",
       env: "TV 보유, Wi-Fi 보유",
-      note: "30분~1시간 변동 가능 안내 드리기"
+      note: "★11/27=대체 ●23:디바이스케어,위젯 / 30:버스앱,카카오T / 6:카메라or카톡or지도"
     },
     {
       id: "sinbong",
-      name: "신봉마을LG빌리지5차A단지아파트경로당",
+      name: "신봉마을LG빌리지5차A단지아파트 경로당",
       address: "경기 용인시 수지구 신봉1로 112-2 신봉마을LG빌리지5차A단지 아파트 경로당, 경로당1층 (511동 옆 관리동)",
       target: "시니어 7명",
       startDate: "2026-10-12",
@@ -390,7 +390,65 @@
       assistant: "이윤경",
       assistantPhone: "010-2907-1438",
       env: "",
-      note: "●안내 NO(오전 시간 부족) ★수or금 안내하기!!!"
+      note: "●2:카톡/9:카메라/카메라 나머지 나가기"
+    },
+    {
+      id: "sinbong_ai",
+      name: "신봉마을LG빌리지5차A단지아파트 경로당",
+      address: "경기 용인시 수지구 신봉1로 112-2 신봉마을LG빌리지5차A단지 아파트 경로당, 경로당1층 (511동 옆 관리동)",
+      target: "시니어 7명",
+      startDate: "2026-11-13",
+      endDate: "2026-12-04",
+      totalSessions: 4,
+      day: "금",
+      startTime: "09:30",
+      endTime: "11:30",
+      topic: "스마트폰 AI 활용교실",
+      topicKey: "ai",
+      customDates: [
+        "2026-11-13",
+        "2026-11-20",
+        "2026-11-27",
+        "2026-12-04"
+      ],
+      managerName: "백상욱",
+      managerRole: "총무",
+      managerPhone: "010-7399-7063",
+      mainTeacher: "이현진",
+      mainPhone: "010-8722-7357",
+      assistant: "이윤경",
+      assistantPhone: "010-2907-1438",
+      env: "",
+      note: "●2:카톡/9:카메라/카메라 나머지 나가기"
+    },
+    {
+      id: "vrew_online",
+      name: "브루(VREW) AI영상제작 온라인 클래스",
+      address: "온라인 (Zoom 화상 강의)",
+      target: "온라인 수강생",
+      startDate: "2026-11-25",
+      endDate: "2026-12-03",
+      totalSessions: 4,
+      day: "수·목",
+      startTime: "19:30",
+      endTime: "22:30",
+      topic: "ChatGPT 영상 기획 및 Vrew AI 영상 제작·편집",
+      topicKey: "vrew",
+      customDates: [
+        "2026-11-25",
+        "2026-11-26",
+        "2026-12-02",
+        "2026-12-03"
+      ],
+      managerName: "",
+      managerRole: "",
+      managerPhone: "",
+      mainTeacher: "이현진",
+      mainPhone: "010-8722-7357",
+      assistant: "",
+      assistantPhone: "",
+      env: "온라인 Zoom (비대면)",
+      note: "●온라인 줌(Zoom) 실시간 화상 강의"
     }
   ];
 
@@ -431,6 +489,17 @@
         { no: 10, title: "카톡AI로 재미있는 동영상 생성", desc: "사진으로 움직이는 영상 만들기, 카톡으로 가족에게 보내기" },
         { no: 11, title: "수노AI로 노래 만들기", desc: "신나는 트로트·감성 발라드·귀여운 동요 만들기" },
         { no: 12, title: "간단한 AI 윤리 + 발표회", desc: "AI로 만든 이미지·영상 구별하기, 가짜 뉴스 구별하기, 그동안 만든 이미지·노래 발표" }
+      ]
+    },
+    vrew: {
+      id: "vrew",
+      title: "ChatGPT 영상 기획 및 Vrew AI 영상 제작·편집",
+      file: "curriculum-vrew.html",
+      lessons: [
+        { no: 1, title: "ChatGPT 영상 기획 및 대본 작성", desc: "ChatGPT를 활용한 영상 주제 선정, 기획 및 대본 작성 실습" },
+        { no: 2, title: "Vrew AI 시작하기 및 음성 생성", desc: "Vrew AI 프로그램 설치 및 인터페이스, AI 목소리 설정 및 자막 생성 실습" },
+        { no: 3, title: "Vrew AI 영상 컷 편집 및 이미지·비디오 삽입", desc: "AI 이미지 생성, 무료 영상 소스 삽입 및 화면 구성 편집" },
+        { no: 4, title: "배경음악·효과음 및 최종 영상 내보내기", desc: "배경음악 및 효과음 삽입, 렌더링 및 완성 영상 공유" }
       ]
     }
   };
